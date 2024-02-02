@@ -1,7 +1,7 @@
 import { argv } from 'process';
 import showSystemInfo from './modules/system-info.js';
 import { printInvalidInputMessage } from './modules/errors.js';
-import { goUpperCurrentDirectory, logCurrentSystemDirectory }from './modules/directory.js';
+import { goUpperCurrentDirectory, printCurrentSystemDirectory, changePath }from './modules/directory.js';
 
 let username = '';
 
@@ -15,7 +15,7 @@ const startAppWithUserName = () => {
   } else if (argv[2].length >= 11 && argv[2].slice(0, 11) === '--username=') {
     username = argv[2].length !== 11 ? argv[2].slice(11) : 'Noname user';    
     console.log(`Welcome to the File Manager, ${username}!`);
-    logCurrentSystemDirectory();
+    printCurrentSystemDirectory();
     makeReadStream();
   }
 }
@@ -32,16 +32,19 @@ const makeReadStream = async () => {
     }
     if (chunk.toString().trim().length === 2 && chunk.toString().trim() === 'up') {      
         goUpperCurrentDirectory();
-        logCurrentSystemDirectory();
+        printCurrentSystemDirectory();
     } else { 
       switch(chunk.toString().split(' ')[0]) {
         case 'os':        
           showSystemInfo(chunk.toString().split(' ')[1]);
-          logCurrentSystemDirectory();
-        break;        
+          printCurrentSystemDirectory();
+        break;
+        case 'cd':        
+          changePath(chunk.toString().split(' ')[1]);         
+        break; 
         default:
           printInvalidInputMessage();
-          logCurrentSystemDirectory();
+          printCurrentSystemDirectory();
         break;
       }
     }

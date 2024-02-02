@@ -2,8 +2,8 @@ const printInvalidInputMessage = () => {
   console.log('Invalid input');
 }
 
-const customError = () => {
-  return 'Operation failed';
+const printCustomError = () => {
+  console.error('Operation failed');
 }
 
-export { printInvalidInputMessage, customError };
+export { printInvalidInputMessage, printCustomError };
