@@ -1,5 +1,5 @@
 import { cpus, EOL, homedir, userInfo } from 'os';
-import printInvalidInputMessage from './errors';
+import { printInvalidInputMessage } from './errors.js';
 
 const OS_ARGUMENTS = {
   END_OF_LINE: '--EOL',
@@ -33,9 +33,7 @@ const showSystemInfo = (argument) => {
     default:
       printInvalidInputMessage();
     break;
-  }   
+  }
 }
 
-const showCurrentSystemDirectory = () => homedir; 
-
-export { showSystemInfo, showCurrentSystemDirectory };
+export default  showSystemInfo;

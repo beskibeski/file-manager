@@ -1,9 +1,9 @@
 import { argv } from 'process';
-import { showSystemInfo, showCurrentSystemDirectory } from './modules/system-info.js';
-import printInvalidInputMessage from './modules/errors.js';
+import showSystemInfo from './modules/system-info.js';
+import { printInvalidInputMessage } from './modules/errors.js';
+import { goUpperCurrentDirectory, logCurrentSystemDirectory }from './modules/directory.js';
 
 let username = '';
-let currentDirectory = showCurrentSystemDirectory();
 
 const start = () => {
   startAppWithUserName();
@@ -15,7 +15,7 @@ const startAppWithUserName = () => {
   } else if (argv[2].length >= 11 && argv[2].slice(0, 11) === '--username=') {
     username = argv[2].length !== 11 ? argv[2].slice(11) : 'Noname user';    
     console.log(`Welcome to the File Manager, ${username}!`);
-    console.log(`You are currently in ${currentDirectory}`);
+    logCurrentSystemDirectory();
     makeReadStream();
   }
 }
@@ -30,13 +30,20 @@ const makeReadStream = async () => {
       console.log(`Thank you for using File Manager, ${username}, goodbye!`);
       process.exit();      
     }
-    switch(chunk.toString().split(' ')[0]) {
-      case 'os':        
-        showSystemInfo(chunk.toString().split(' ')[1]);
-      break;
-      default:
-        printInvalidInputMessage();
-      break;
+    if (chunk.toString().trim().length === 2 && chunk.toString().trim() === 'up') {      
+        goUpperCurrentDirectory();
+        logCurrentSystemDirectory();
+    } else { 
+      switch(chunk.toString().split(' ')[0]) {
+        case 'os':        
+          showSystemInfo(chunk.toString().split(' ')[1]);
+          logCurrentSystemDirectory();
+        break;        
+        default:
+          printInvalidInputMessage();
+          logCurrentSystemDirectory();
+        break;
+      }
     }
   });
 };
