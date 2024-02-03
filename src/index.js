@@ -1,7 +1,8 @@
 import { argv } from 'process';
 import showSystemInfo from './modules/system-info.js';
 import { printInvalidInputMessage } from './modules/errors.js';
-import { goUpperCurrentDirectory, printCurrentSystemDirectory, changePath }from './modules/directory.js';
+import { goUpperCurrentDirectory, printCurrentDirectory, changePath } from './modules/directory.js';
+import printFileList from './modules/file-list.js';
 
 let username = '';
 
@@ -15,7 +16,7 @@ const startAppWithUserName = () => {
   } else if (argv[2].length >= 11 && argv[2].slice(0, 11) === '--username=') {
     username = argv[2].length !== 11 ? argv[2].slice(11) : 'Noname user';    
     console.log(`Welcome to the File Manager, ${username}!`);
-    printCurrentSystemDirectory();
+    printCurrentDirectory();
     makeReadStream();
   }
 }
@@ -30,21 +31,31 @@ const makeReadStream = async () => {
       console.log(`Thank you for using File Manager, ${username}, goodbye!`);
       process.exit();      
     }
-    if (chunk.toString().trim().length === 2 && chunk.toString().trim() === 'up') {      
-        goUpperCurrentDirectory();
-        printCurrentSystemDirectory();
+    if (chunk.toString().trim().length === 2) {
+      switch(chunk.toString().trim()) {
+        case 'up':
+          goUpperCurrentDirectory();
+          printCurrentDirectory();
+        break;
+        case 'ls':
+          printFileList();
+          printCurrentDirectory();
+        break;
+      }
     } else { 
       switch(chunk.toString().split(' ')[0]) {
         case 'os':        
           showSystemInfo(chunk.toString().split(' ')[1]);
-          printCurrentSystemDirectory();
+          printCurrentDirectory();
         break;
         case 'cd':        
-          changePath(chunk.toString().split(' ')[1]);         
-        break; 
+          changePath(chunk.toString().split(' ')[1]);
+        break;
+        case 'hash':
+          break;
         default:
           printInvalidInputMessage();
-          printCurrentSystemDirectory();
+          printCurrentDirectory();
         break;
       }
     }

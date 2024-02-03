@@ -36,4 +36,4 @@ const showSystemInfo = (argument) => {
   }
 }
 
-export default  showSystemInfo;
+export default showSystemInfo;

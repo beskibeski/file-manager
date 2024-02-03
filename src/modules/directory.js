@@ -1,12 +1,13 @@
 import { homedir } from 'os';
-import { sep } from 'path';
+import { sep, normalize, isAbsolute, resolve } from 'path';
 import { printCustomError, printInvalidInputMessage } from './errors.js';
 import { access } from 'node:fs/promises';
 
 let currentDirectory = homedir();
 const pathSeparator = sep;
 
-const printCurrentSystemDirectory = () => console.log(`You current directory is ${currentDirectory}`); 
+const printCurrentDirectory = () => console.log(`You are currently in ${currentDirectory}`); 
+const getCurrentDirectory = () => currentDirectory;
 
 const goUpperCurrentDirectory = () => {  
   let count = currentDirectory.split('').reduce((acc, n) => n === pathSeparator ? acc += 1 : acc, 0);  
@@ -17,21 +18,26 @@ const goUpperCurrentDirectory = () => {
   }
 };
 
-const changePath = async (newPath) => {
+const changePath = async (pathToWorkWith) => {
+  let newPath = pathToWorkWith.trim();
+  if (!isAbsolute(newPath)) {
+    newPath = resolve(newPath);
+    console.log(newPath)
+  }
   if (newPath.length < 3 || !/^[a-zA-Z]+$/.test(newPath[0]) || newPath[2] !== pathSeparator || newPath[1] !== (':')) {
     printInvalidInputMessage();
-    printCurrentSystemDirectory();
+    printCurrentDirectory();
   } else {    
-    access(newPath.trim())
+    access(normalize(newPath))
       .then(() => {
-        currentDirectory = newPath.trim();        
+        currentDirectory = normalize(newPath);        
       })
       .catch(() =>
         printCustomError())
       .finally(() => {
-        printCurrentSystemDirectory();
+        printCurrentDirectory();
       })                
   }
 }
 
-export { goUpperCurrentDirectory, printCurrentSystemDirectory, changePath };
+export { goUpperCurrentDirectory, printCurrentDirectory, changePath, getCurrentDirectory };
