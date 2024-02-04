@@ -5,6 +5,7 @@ import { goUpperCurrentDirectory, printCurrentDirectory, changePath } from './mo
 import printHashForFile from './modules/hash.js';
 import printFileList from './modules/file-list.js';
 import { deCompressFile, compressFile } from './modules/archives.js';
+import { copyFile, createFile, readFile, removeFile, renameFile, moveFile } from './modules/files.js';
 
 let username = '';
 
@@ -62,10 +63,28 @@ const makeReadStream = async () => {
         case 'decompress':
           deCompressFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
         break;
+        case 'cat':
+          readFile(chunk.toString().split(' ')[1].trim());
+        break;
+        case 'add':
+          createFile(chunk.toString().split(' ')[1].trim());
+        break;
+        case 'rn':
+          renameFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+        break;
+        case 'cp':
+          copyFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+        break;
+        case 'mv':
+          moveFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+        break;
+        case 'rm':
+          removeFile(chunk.toString().split(' ')[1].trim());          
+        break;        
         default:
           printInvalidInputMessage();
           printCurrentDirectory();
-        break;
+        break;        
       }
     }
   });

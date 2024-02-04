@@ -8,47 +8,47 @@ import { pipeline } from 'stream';
 
 const pipe = promisify(pipeline);
 
-const compressFile = async (path_to_file, path_to_destination) => {  
-  if (!isAbsolute(path_to_file) || !isAbsolute(path_to_destination)) {
+const compressFile = async (pathToFile, pathToDestination) => {  
+  if (!isAbsolute(pathToFile) || !isAbsolute(pathToDestination)) {
     printInvalidInputMessage();
     printCurrentDirectory();
     return;
   };  
 
-  const makeBrotli = async (path_to_file, path_to_destination) => {    
-    const rs = createReadStream(`${path_to_file}`).on('error', () => {      
+  const makeBrotli = async (pathToFile, pathToDestination) => {    
+    const rs = createReadStream(`${pathToFile}`).on('error', () => {      
     });
     const brotli = createBrotliCompress();    
-    const ws = createWriteStream(`${path_to_destination}${basename(path_to_file)}.br`).on('error', () => {      
+    const ws = createWriteStream(`${pathToDestination}${basename(pathToFile)}.br`).on('error', () => {      
     });
     await pipe(rs, brotli, ws).finally(() => { printCurrentDirectory() });
   }
 
-  makeBrotli(path_to_file, path_to_destination)
+  makeBrotli(pathToFile, pathToDestination)
     .catch(() => {
       printCustomError();
       printCurrentDirectory();
     });
 };
 
-const deCompressFile = (path_to_file, path_to_destination) => {
-  if (!isAbsolute(path_to_file) || !isAbsolute(path_to_destination)) {
+const deCompressFile = (pathToFile, pathToDestination) => {
+  if (!isAbsolute(pathToFile) || !isAbsolute(pathToDestination)) {
     printInvalidInputMessage();
     printCurrentDirectory();
     return;
   };  
 
-  const unMakeBrotli = async (path_to_file, path_to_destination) => {
-    const fileSuffix = extname(path_to_file);
-    const rs = createReadStream(`${path_to_file}`).on('error', () => {      
+  const unMakeBrotli = async (pathToFile, pathToDestination) => {
+    const fileSuffix = extname(pathToFile);
+    const rs = createReadStream(`${pathToFile}`).on('error', () => {      
     });
     const brotli = createBrotliDecompress();    
-    const ws = createWriteStream(`${path_to_destination}${basename(path_to_file, fileSuffix)}`).on('error', () => {      
+    const ws = createWriteStream(`${pathToDestination}${basename(pathToFile, fileSuffix)}`).on('error', () => {      
     });
     await pipe(rs, brotli, ws).finally(() => { printCurrentDirectory() });
   }
 
-  unMakeBrotli(path_to_file, path_to_destination)
+  unMakeBrotli(pathToFile, pathToDestination)
     .catch(() => {
       printCustomError();
       printCurrentDirectory();
