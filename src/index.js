@@ -2,7 +2,9 @@ import { argv } from 'process';
 import showSystemInfo from './modules/system-info.js';
 import { printInvalidInputMessage } from './modules/errors.js';
 import { goUpperCurrentDirectory, printCurrentDirectory, changePath } from './modules/directory.js';
+import printHashForFile from './modules/hash.js';
 import printFileList from './modules/file-list.js';
+import { deCompressFile, compressFile } from './modules/archives.js';
 
 let username = '';
 
@@ -12,7 +14,7 @@ const start = () => {
 
 const startAppWithUserName = () => {  
   if (argv.length <= 2 || argv[2].slice(0, 11) !== '--username=') {
-    console.error('wrong arguments. Please start application in this way: npm run start or node src/index.js -- --username=your_username');
+    console.error('Wrong arguments. Please start application in this way: npm run start -- --username=your_username or node src/index.js --username=your_username');
   } else if (argv[2].length >= 11 && argv[2].slice(0, 11) === '--username=') {
     username = argv[2].length !== 11 ? argv[2].slice(11) : 'Noname user';    
     console.log(`Welcome to the File Manager, ${username}!`);
@@ -52,7 +54,14 @@ const makeReadStream = async () => {
           changePath(chunk.toString().split(' ')[1]);
         break;
         case 'hash':
-          break;
+          printHashForFile(chunk.toString().split(' ')[1]);
+        break;
+        case 'compress':
+          compressFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+        break;
+        case 'decompress':
+          deCompressFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+        break;
         default:
           printInvalidInputMessage();
           printCurrentDirectory();

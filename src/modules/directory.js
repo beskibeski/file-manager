@@ -18,8 +18,8 @@ const goUpperCurrentDirectory = () => {
   }
 };
 
-const changePath = async (pathToWorkWith) => {
-  let newPath = pathToWorkWith.trim();
+const changePath = async (pathToFile) => {
+  let newPath = pathToFile.trim();
   if (!isAbsolute(newPath)) {
     newPath = resolve(newPath);
     console.log(newPath)
