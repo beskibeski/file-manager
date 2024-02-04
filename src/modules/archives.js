@@ -1,14 +1,20 @@
 import { createReadStream, createWriteStream } from 'fs';
 import { createBrotliCompress, createBrotliDecompress } from 'zlib';
 import { printCustomError, printInvalidInputMessage } from './errors.js';
-import { extname, basename, isAbsolute } from 'path';
+import { extname, basename, isAbsolute, resolve } from 'path';
 import { printCurrentDirectory }from './directory.js';
 import { promisify } from 'util';
 import { pipeline } from 'stream';
 
 const pipe = promisify(pipeline);
 
-const compressFile = async (pathToFile, pathToDestination) => {  
+const compressFile = async (pathToFile, pathToDestination) => {
+  if (!isAbsolute(pathToFile)) {
+    pathToFile = resolve(pathToFile);
+  };
+  if (!isAbsolute(pathToDestination)) {
+    pathToDestination = resolve(pathToDestination);
+  };  
   if (!isAbsolute(pathToFile) || !isAbsolute(pathToDestination)) {
     printInvalidInputMessage();
     printCurrentDirectory();
@@ -32,6 +38,12 @@ const compressFile = async (pathToFile, pathToDestination) => {
 };
 
 const deCompressFile = (pathToFile, pathToDestination) => {
+  if (!isAbsolute(pathToFile)) {
+    pathToFile = resolve(pathToFile);
+  };
+  if (!isAbsolute(pathToDestination)) {
+    pathToDestination = resolve(pathToDestination);
+  };
   if (!isAbsolute(pathToFile) || !isAbsolute(pathToDestination)) {
     printInvalidInputMessage();
     printCurrentDirectory();

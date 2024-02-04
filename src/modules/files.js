@@ -1,4 +1,4 @@
-import { isAbsolute, dirname, basename, sep }from 'path';
+import { isAbsolute, dirname, basename, sep, resolve }from 'path';
 import { printCustomError, printInvalidInputMessage } from './errors.js';
 import { createReadStream, createWriteStream } from 'fs';
 import { unlink, writeFile, rename } from 'fs/promises';
@@ -6,10 +6,13 @@ import { printCurrentDirectory } from './directory.js';
 
 const readFile = async (pathToFile) => {
   if (!isAbsolute(pathToFile)) {
+    pathToFile = resolve(pathToFile);
+  };
+  if (!isAbsolute(pathToFile)) {
     printInvalidInputMessage();
     printCurrentDirectory();
     return;
-  }
+  };
   createReadStream(`${pathToFile}`)
     .on('error', () => {
       printCustomError();
@@ -24,10 +27,13 @@ const readFile = async (pathToFile) => {
 
 const createFile = async (pathToFile) => {
   if (!isAbsolute(pathToFile)) {
+    newPath = resolve(pathToFile);
+  };
+  if (!isAbsolute(pathToFile)) {
     printInvalidInputMessage();
     printCurrentDirectory();
     return;
-  }
+  };
   writeFile(pathToFile, '', { flag: 'ax' })
     .then(() => {
       printCurrentDirectory();
@@ -39,23 +45,32 @@ const createFile = async (pathToFile) => {
 };
 
 const renameFile = async (pathToFile, newFilename) => {
-  const fileDirectory = dirname(pathToFile);
+  if (!isAbsolute(pathToFile)) {
+    pathToFile = resolve(pathToFile);
+  };  
   if (!isAbsolute(pathToFile)) {
     printInvalidInputMessage();
     printCurrentDirectory();
     return;
-  }    
-    rename(pathToFile, `${fileDirectory}${newFilename}`)
-      .then(() => {
-        printCurrentDirectory();
-      })
-      .catch(() => {
-        printCustomError();
-        printCurrentDirectory();
-      });
+  };
+  const fileDirectory = dirname(pathToFile);
+  rename(pathToFile, `${fileDirectory}${newFilename}`)
+    .then(() => {
+      printCurrentDirectory();
+    })
+    .catch(() => {
+      printCustomError();
+      printCurrentDirectory();
+    });
   }
 
 const copyFile = async (pathToFile, pathToDirectory) => {
+  if (!isAbsolute(pathToFile)) {
+    pathToFile = resolve(pathToFile);
+  };
+  if (!isAbsolute(pathToDirectory)) {
+    pathToDirectory = resolve(pathToDirectory);
+  };
   if (!isAbsolute(pathToFile) || !isAbsolute(pathToDirectory)) {
     printInvalidInputMessage();
     printCurrentDirectory();
@@ -79,11 +94,17 @@ const copyFile = async (pathToFile, pathToDirectory) => {
 };
 
 const moveFile = async (pathToFile, pathToDirectory) => {
+  if (!isAbsolute(pathToFile)) {
+    pathToFile = resolve(pathToFile);
+  };
+  if (!isAbsolute(pathToDirectory)) {
+    pathToDirectory = resolve(pathToDirectory);
+  };
   if (!isAbsolute(pathToFile) || !isAbsolute(pathToDirectory)) {
     printInvalidInputMessage();
     printCurrentDirectory();
     return;
-  }
+  };
   const filename = basename(pathToFile);
   const rs = createReadStream(pathToFile);
   const ws = createWriteStream(`${pathToDirectory}${sep}${filename}`);
@@ -102,6 +123,9 @@ const moveFile = async (pathToFile, pathToDirectory) => {
 };
 
 const removeFile = async (pathToFile) => {
+  if (!isAbsolute(pathToFile)) {
+    pathToFile = resolve(pathToFile);
+  };  
   if (!isAbsolute(pathToFile)) {
     printInvalidInputMessage();
     printCurrentDirectory();
