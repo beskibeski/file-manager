@@ -1,0 +1,117 @@
+import { argv } from 'process';
+import showSystemInfo from './modules/system-info.js';
+import { printInvalidInputMessage } from './modules/errors.js';
+import { goUpperCurrentDirectory, printCurrentDirectory, changePath } from './modules/directory.js';
+import printHashForFile from './modules/hash.js';
+import printFileList from './modules/file-list.js';
+import { deCompressFile, compressFile } from './modules/archives.js';
+import { copyFile, createFile, readFile, removeFile, renameFile, moveFile } from './modules/files.js';
+
+let username = '';
+
+const start = () => {
+  startAppWithUserName();
+}
+
+const startAppWithUserName = () => {  
+  if (argv.length <= 2 || argv[2].slice(0, 11) !== '--username=') {
+    username = 'Noname';    
+  } else {
+    username = argv[2].length !== 11 ? argv[2].slice(11) : 'Noname';
+  }
+  console.log(`Welcome to the File Manager, ${username}!`);
+  printCurrentDirectory();
+  makeReadStream();
+}
+
+const makeReadStream = async () => {
+  process.on('SIGINT', () => {    
+    console.log(`Thank you for using File Manager, ${username}, goodbye!`);    
+    process.exit();  
+  });  
+  process.stdin.on('data', (chunk) => {    
+    if (chunk.toString().includes('.exit')){
+      console.log(`Thank you for using File Manager, ${username}, goodbye!`);
+      process.exit();      
+    }
+    if (chunk.toString().trim().length === 2) {     
+      switch(chunk.toString().trim()) {
+        case 'up':
+          goUpperCurrentDirectory();
+          printCurrentDirectory();
+        break;
+        case 'ls':
+          printFileList();       
+        break;
+        default:
+          printInvalidInputMessage();
+          printCurrentDirectory();
+        break;    
+      }
+    } else {      
+      switch(chunk.toString().split(' ')[0]) {
+        case 'os':        
+          showSystemInfo(chunk.toString().split(' ')[1]);
+          printCurrentDirectory();
+        break;
+        case 'cd':        
+          changePath(chunk.toString().split(' ')[1].replace('?', ' '));
+        break;
+        case 'hash':
+          printHashForFile(chunk.toString().split(' ')[1].replace('?', ' '));
+        break;
+        case 'compress':
+          compressFile(chunk.toString().split(' ')[1].replace('?', ' '), chunk.toString().split(' ')[2].trim().replace('?', ' '));
+        break;
+        case 'decompress':
+          if (chunk.toString().split(' ')[2] !== undefined) {
+            deCompressFile(chunk.toString().split(' ')[1].replace('?', ' '), chunk.toString().split(' ')[2].trim().replace('?', ' '));
+          } else {
+            printInvalidInputMessage();
+            printCurrentDirectory();
+          }
+        break;
+        case 'cat':
+          readFile(chunk.toString().split(' ')[1].trim().replace('?', ' '));
+        break;
+        case 'add':
+          createFile(chunk.toString().split(' ')[1].trim().replace('?', ' '));
+        break;
+        case 'rn':
+          if (chunk.toString().split(' ')[2] !== undefined) {
+            renameFile(chunk.toString().split(' ')[1].replace('?', ' '), chunk.toString().split(' ')[2].trim().replace('?', ' '));
+          }
+          else {
+            printInvalidInputMessage();
+            printCurrentDirectory();
+          }
+        break;
+        case 'cp':
+          if (chunk.toString().split(' ')[2] !== undefined) {
+            copyFile(chunk.toString().split(' ')[1].replace('?', ' '), chunk.toString().split(' ')[2].trim().replace('?', ' '));
+          } else {
+            printInvalidInputMessage();
+            printCurrentDirectory();
+          }          
+        break;
+        case 'mv':
+          if (chunk.toString().split(' ')[2] !== undefined) {
+            moveFile(chunk.toString().split(' ')[1].replace('?', ' '), chunk.toString().split(' ')[2].trim().replace('?', ' '));
+          } else {
+            printInvalidInputMessage();
+            printCurrentDirectory();
+          }
+        break;
+        case 'rm':
+          removeFile(chunk.toString().split(' ')[1].trim().replace('?', ' '));          
+        break;        
+        default:
+          printInvalidInputMessage();
+          printCurrentDirectory();
+        break;        
+      }
+    }
+  });
+};
+
+start();
