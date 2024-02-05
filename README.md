@@ -1,6 +1,9 @@
 # File manager
 
 ## Description
+
+## BEWARE!!!! IF YOU WANT TO MAKE SOME OPERATION WITH FILE OR DIRECTORY WHICH NAME CONTAINS SPACES PLEASE TYPE `?` INSTEAD OF ` `!!!!! 
+
 The program is started by npm-script `start` in following way:
 ```bash
 npm run start -- --username=your_username
@@ -12,8 +15,6 @@ pressed `ctrl+c`:
 ```
 - In case of unknown operation or invalid input (missing mandatory arguments, wrong data in arguments, etc.) `Invalid input` message is shown and user is able to enter another command
 - In case of error during execution of operation `Operation failed` message is shown and user is able to enter another command (e.g. attempt to perform an operation on a non-existent file or work on a non-existent path should result in the operation fail)
-
-## BEWARE!!!! IF YOU WANT TO MAKE SOME OPERATION WITH FILE OR DIRECTORY WHICH NAME CONTAINS SPACES PLEASE TYPE `?` INSTEAD OF ` `!!!!! 
 
 List of operations and their syntax:
 - Navigation & working directory (nwd)
