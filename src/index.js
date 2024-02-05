@@ -43,6 +43,10 @@ const makeReadStream = async () => {
         case 'ls':
           printFileList();       
         break;
+        default:
+          printInvalidInputMessage();
+          printCurrentDirectory();
+        break;    
       }
     } else { 
       switch(chunk.toString().split(' ')[0]) {
@@ -60,7 +64,12 @@ const makeReadStream = async () => {
           compressFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
         break;
         case 'decompress':
-          deCompressFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+          if (chunk.toString().split(' ')[2] !== undefined) {
+            deCompressFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+          } else {
+            printInvalidInputMessage();
+            printCurrentDirectory();
+          }
         break;
         case 'cat':
           readFile(chunk.toString().split(' ')[1].trim());
@@ -69,13 +78,29 @@ const makeReadStream = async () => {
           createFile(chunk.toString().split(' ')[1].trim());
         break;
         case 'rn':
-          renameFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+          if (chunk.toString().split(' ')[2] !== undefined) {
+            renameFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+          }
+          else {
+            printInvalidInputMessage();
+            printCurrentDirectory();
+          }
         break;
         case 'cp':
-          copyFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+          if (chunk.toString().split(' ')[2] !== undefined) {
+            copyFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+          } else {
+            printInvalidInputMessage();
+            printCurrentDirectory();
+          }          
         break;
         case 'mv':
-          moveFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+          if (chunk.toString().split(' ')[2] !== undefined) {
+            moveFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+          } else {
+            printInvalidInputMessage();
+            printCurrentDirectory();
+          }
         break;
         case 'rm':
           removeFile(chunk.toString().split(' ')[1].trim());          

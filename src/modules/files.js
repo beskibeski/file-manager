@@ -25,15 +25,7 @@ const readFile = async (pathToFile) => {
     .pipe(process.stdout);
 };
 
-const createFile = async (pathToFile) => {
-  if (!isAbsolute(pathToFile)) {
-    newPath = resolve(pathToFile);
-  };
-  if (!isAbsolute(pathToFile)) {
-    printInvalidInputMessage();
-    printCurrentDirectory();
-    return;
-  };
+const createFile = async (pathToFile) => { 
   writeFile(pathToFile, '', { flag: 'ax' })
     .then(() => {
       printCurrentDirectory();
@@ -65,6 +57,7 @@ const renameFile = async (pathToFile, newFilename) => {
   }
 
 const copyFile = async (pathToFile, pathToDirectory) => {
+  let isErrorPrinted = false;
   if (!isAbsolute(pathToFile)) {
     pathToFile = resolve(pathToFile);
   };
@@ -83,10 +76,13 @@ const copyFile = async (pathToFile, pathToDirectory) => {
   rs.on('error', () => {
     printCustomError();
     printCurrentDirectory();
+    isErrorPrinted = true;
   });
   ws.on('error', () => {
-    printCustomError();
-    printCurrentDirectory();
+    if (!isErrorPrinted) {
+      printCustomError();
+      printCurrentDirectory();
+    }
   });
   rs.on('end', () => {    
     printCurrentDirectory();
@@ -94,6 +90,7 @@ const copyFile = async (pathToFile, pathToDirectory) => {
 };
 
 const moveFile = async (pathToFile, pathToDirectory) => {
+  let isErrorPrinted = false;
   if (!isAbsolute(pathToFile)) {
     pathToFile = resolve(pathToFile);
   };
@@ -112,10 +109,13 @@ const moveFile = async (pathToFile, pathToDirectory) => {
   rs.on('error', () => {
     printCustomError();
     printCurrentDirectory();
+    isErrorPrinted = true;
   });
   ws.on('error', () => {
-    printCustomError();
-    printCurrentDirectory();
+    if (!isErrorPrinted) {
+      printCustomError();
+      printCurrentDirectory();
+    }
   });
   rs.on('close', () => {    
     removeFile(pathToFile);   
