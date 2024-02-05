@@ -41,8 +41,7 @@ const makeReadStream = async () => {
           printCurrentDirectory();
         break;
         case 'ls':
-          printFileList();
-          printCurrentDirectory();
+          printFileList();       
         break;
       }
     } else { 

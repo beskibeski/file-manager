@@ -10,7 +10,12 @@ const pathSeparator = sep;
 const printCurrentDirectory = () => console.log(`You are currently in ${currentDirectory}`); 
 const getCurrentDirectory = () => currentDirectory;
 
-const goUpperCurrentDirectory = () => {  
+const goUpperCurrentDirectory = () => {
+  // for users who want the root folder to be home directory
+  /* if (currentDirectory ===  homedir()) {
+    printCurrentDirectory();
+    return;
+  } */
   let count = currentDirectory.split('').reduce((acc, n) => n === pathSeparator ? acc += 1 : acc, 0);  
   if (count > 1) {
     currentDirectory = currentDirectory.slice(0, currentDirectory.lastIndexOf(pathSeparator));
