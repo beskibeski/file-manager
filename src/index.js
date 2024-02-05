@@ -34,7 +34,7 @@ const makeReadStream = async () => {
       console.log(`Thank you for using File Manager, ${username}, goodbye!`);
       process.exit();      
     }
-    if (chunk.toString().trim().length === 2) {
+    if (chunk.toString().trim().length === 2) {     
       switch(chunk.toString().trim()) {
         case 'up':
           goUpperCurrentDirectory();
@@ -48,38 +48,38 @@ const makeReadStream = async () => {
           printCurrentDirectory();
         break;    
       }
-    } else { 
+    } else {      
       switch(chunk.toString().split(' ')[0]) {
         case 'os':        
           showSystemInfo(chunk.toString().split(' ')[1]);
           printCurrentDirectory();
         break;
         case 'cd':        
-          changePath(chunk.toString().split(' ')[1]);
+          changePath(chunk.toString().split(' ')[1].replace('?', ' '));
         break;
         case 'hash':
-          printHashForFile(chunk.toString().split(' ')[1]);
+          printHashForFile(chunk.toString().split(' ')[1].replace('?', ' '));
         break;
         case 'compress':
-          compressFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+          compressFile(chunk.toString().split(' ')[1].replace('?', ' '), chunk.toString().split(' ')[2].trim().replace('?', ' '));
         break;
         case 'decompress':
           if (chunk.toString().split(' ')[2] !== undefined) {
-            deCompressFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+            deCompressFile(chunk.toString().split(' ')[1].replace('?', ' '), chunk.toString().split(' ')[2].trim().replace('?', ' '));
           } else {
             printInvalidInputMessage();
             printCurrentDirectory();
           }
         break;
         case 'cat':
-          readFile(chunk.toString().split(' ')[1].trim());
+          readFile(chunk.toString().split(' ')[1].trim().replace('?', ' '));
         break;
         case 'add':
-          createFile(chunk.toString().split(' ')[1].trim());
+          createFile(chunk.toString().split(' ')[1].trim().replace('?', ' '));
         break;
         case 'rn':
           if (chunk.toString().split(' ')[2] !== undefined) {
-            renameFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+            renameFile(chunk.toString().split(' ')[1].replace('?', ' '), chunk.toString().split(' ')[2].trim().replace('?', ' '));
           }
           else {
             printInvalidInputMessage();
@@ -88,7 +88,7 @@ const makeReadStream = async () => {
         break;
         case 'cp':
           if (chunk.toString().split(' ')[2] !== undefined) {
-            copyFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+            copyFile(chunk.toString().split(' ')[1].replace('?', ' '), chunk.toString().split(' ')[2].trim().replace('?', ' '));
           } else {
             printInvalidInputMessage();
             printCurrentDirectory();
@@ -96,14 +96,14 @@ const makeReadStream = async () => {
         break;
         case 'mv':
           if (chunk.toString().split(' ')[2] !== undefined) {
-            moveFile(chunk.toString().split(' ')[1], chunk.toString().split(' ')[2].trim());
+            moveFile(chunk.toString().split(' ')[1].replace('?', ' '), chunk.toString().split(' ')[2].trim().replace('?', ' '));
           } else {
             printInvalidInputMessage();
             printCurrentDirectory();
           }
         break;
         case 'rm':
-          removeFile(chunk.toString().split(' ')[1].trim());          
+          removeFile(chunk.toString().split(' ')[1].trim().replace('?', ' '));          
         break;        
         default:
           printInvalidInputMessage();

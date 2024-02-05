@@ -57,7 +57,6 @@ const renameFile = async (pathToFile, newFilename) => {
   }
 
 const copyFile = async (pathToFile, pathToDirectory) => {
-  let isErrorPrinted = false;
   if (!isAbsolute(pathToFile)) {
     pathToFile = resolve(pathToFile);
   };
@@ -75,22 +74,18 @@ const copyFile = async (pathToFile, pathToDirectory) => {
   rs.pipe(ws);
   rs.on('error', () => {
     printCustomError();
-    printCurrentDirectory();
-    isErrorPrinted = true;
+    printCurrentDirectory();   
   });
-  ws.on('error', () => {
-    if (!isErrorPrinted) {
+  ws.on('error', () => {    
       printCustomError();
-      printCurrentDirectory();
-    }
+      printCurrentDirectory();    
   });
   rs.on('end', () => {    
     printCurrentDirectory();
   });
 };
 
-const moveFile = async (pathToFile, pathToDirectory) => {
-  let isErrorPrinted = false;
+const moveFile = async (pathToFile, pathToDirectory) => {  
   if (!isAbsolute(pathToFile)) {
     pathToFile = resolve(pathToFile);
   };
@@ -108,16 +103,13 @@ const moveFile = async (pathToFile, pathToDirectory) => {
   rs.pipe(ws);
   rs.on('error', () => {
     printCustomError();
-    printCurrentDirectory();
-    isErrorPrinted = true;
+    printCurrentDirectory();  
   });
-  ws.on('error', () => {
-    if (!isErrorPrinted) {
-      printCustomError();
-      printCurrentDirectory();
-    }
+  ws.on('error', () => {    
+    printCustomError();
+    printCurrentDirectory();    
   });
-  rs.on('close', () => {    
+  rs.on('end', () => {    
     removeFile(pathToFile);   
   });
 };
