@@ -109,8 +109,8 @@ const moveFile = async (pathToFile, pathToDirectory) => {
     printCustomError();
     printCurrentDirectory();    
   });
-  rs.on('end', () => {    
-    removeFile(pathToFile);   
+  ws.on('finish', () => {
+    removeFile(pathToFile);
   });
 };
 
