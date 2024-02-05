@@ -15,13 +15,13 @@ const start = () => {
 
 const startAppWithUserName = () => {  
   if (argv.length <= 2 || argv[2].slice(0, 11) !== '--username=') {
-    console.error('Wrong arguments. Please start application in this way: npm run start -- --username=your_username or node src/index.js --username=your_username');
-  } else if (argv[2].length >= 11 && argv[2].slice(0, 11) === '--username=') {
-    username = argv[2].length !== 11 ? argv[2].slice(11) : 'Noname user';    
-    console.log(`Welcome to the File Manager, ${username}!`);
-    printCurrentDirectory();
-    makeReadStream();
+    username = 'Noname';    
+  } else {
+    username = argv[2].length !== 11 ? argv[2].slice(11) : 'Noname';
   }
+  console.log(`Welcome to the File Manager, ${username}!`);
+  printCurrentDirectory();
+  makeReadStream();
 }
 
 const makeReadStream = async () => {
