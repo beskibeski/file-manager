@@ -1,9 +1,11 @@
+import COLORS from './colors.js'
+
 const printInvalidInputMessage = () => {
-  console.log('Invalid input');
+  console.log(COLORS.ERRORS, 'Invalid input');
 }
 
 const printCustomError = () => {
-  console.error('Operation failed');
+  console.error(COLORS.ERRORS, 'Operation failed');
 }
 
 export { printInvalidInputMessage, printCustomError };

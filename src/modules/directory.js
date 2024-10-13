@@ -1,14 +1,16 @@
 import { homedir } from 'os';
-import { sep } from 'path';
+import { sep, normalize, isAbsolute, resolve } from 'path';
 import { chdir } from 'process';
+import { access } from 'node:fs/promises';
+import { printCustomError, printInvalidInputMessage } from './errors.js';
+import COLORS from './colors.js';
 
 let currentDirectory = homedir();
 chdir(currentDirectory);
 const pathSeparator = sep;
 
-const printCurrentDirectory = () => console.log(`You are currently in ${currentDirectory}\nCommand me! (up, ls, .exit)`); 
+const printCurrentDirectory = () => console.log(COLORS.SECOND, `You are currently in ${currentDirectory}\nCommand me! (up, ls, cd, .exit and e.t.c.)`);
 const getCurrentDirectory = () => currentDirectory;
-
 const goUpperCurrentDirectory = () => { 
   let count = currentDirectory.split('').reduce((acc, n) => n === pathSeparator ? acc += 1 : acc, 0);  
   if (count > 1) {
@@ -21,5 +23,27 @@ const goUpperCurrentDirectory = () => {
   printCurrentDirectory();
 };
 
+const changePath = async (pathToFile) => {
+  let newPath = pathToFile.trim();
+  if (!isAbsolute(newPath)) {
+    newPath = resolve(newPath);
+  }
+  if (isAbsolute(newPath)) {    
+    access(normalize(newPath))
+      .then(() => {
+        currentDirectory = normalize(newPath);
+        process.chdir(currentDirectory);
+      })
+      .catch(() =>
+        printCustomError())
+      .finally(() => {
+        printCurrentDirectory();
+      })                
+  } else {
+    printInvalidInputMessage();
+    printCurrentDirectory();
+  }
+}
 
-export { goUpperCurrentDirectory, printCurrentDirectory, getCurrentDirectory };
+
+export { goUpperCurrentDirectory, printCurrentDirectory, getCurrentDirectory, changePath };
