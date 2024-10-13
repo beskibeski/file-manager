@@ -9,7 +9,7 @@ let currentDirectory = homedir();
 chdir(currentDirectory);
 const pathSeparator = sep;
 
-const printCurrentDirectory = () => console.log(COLORS.SECOND, `You are currently in ${currentDirectory}\nCommand me! (up, ls, cd, .exit and e.t.c.)`);
+const printCurrentDirectory = () => console.log(COLORS.SECOND, `You are currently in ${currentDirectory}\nCommand me! (up, ls, cd, os, hash, .exit and e.t.c.)`);
 const getCurrentDirectory = () => currentDirectory;
 const goUpperCurrentDirectory = () => { 
   let count = currentDirectory.split('').reduce((acc, n) => n === pathSeparator ? acc += 1 : acc, 0);  

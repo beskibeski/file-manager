@@ -2,6 +2,8 @@ import { argv, stdin } from 'process';
 import { printInvalidInputMessage } from './modules/errors.js';
 import { goUpperCurrentDirectory, printCurrentDirectory, changePath } from './modules/directory.js';
 import { readFile, createFile, renameFile, copyFile, moveFile, removeFile } from './modules/files.js';
+import showSystemInfo from './modules/system-info.js';
+import printHashForFile from './modules/hash.js';
 import printFileList from './modules/file-list.js';
 import COLORS from './modules/colors.js';
 
@@ -22,6 +24,8 @@ const COMMANDS = {
   COPY_FILE: 'cp',
   MOVE_FILE: 'mv',
   REMOVE_FILE: 'rm',
+  OPERATING_SYSTEM: 'os',
+  CALCULATE_HASH_AND_PRINT: 'hash',
 }
 
 const start = () => {
@@ -101,6 +105,12 @@ const makeReadStream = async () => {
         break;
         case COMMANDS.REMOVE_FILE:
           removeFile(chunk.toString().split(' ')[1].trim().replace('?', ' '));          
+        break;
+        case COMMANDS.OPERATING_SYSTEM:        
+          showSystemInfo(chunk.toString().split(' ')[1]);
+        break;
+        case COMMANDS.CALCULATE_HASH_AND_PRINT:
+          printHashForFile(chunk.toString().split(' ')[1].replace('?', ' '));
         break;
         default:
           printInvalidInputMessage();
